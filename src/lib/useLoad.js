@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
-// Runs a loader (an api.js function) once and returns { data, loading, error }.
+// Runs a loader (an api.js function) and returns { data, loading, error, reload }.
 // The loader must be a stable function, for example one imported from api.js.
 export function useLoad(loader) {
   const [state, setState] = useState({
@@ -8,6 +8,7 @@ export function useLoad(loader) {
     loading: true,
     error: null,
   });
+  const [version, setVersion] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -22,7 +23,9 @@ export function useLoad(loader) {
     return () => {
       cancelled = true;
     };
-  }, [loader]);
+  }, [loader, version]);
 
-  return state;
+  const reload = useCallback(() => setVersion((v) => v + 1), []);
+
+  return { ...state, reload };
 }

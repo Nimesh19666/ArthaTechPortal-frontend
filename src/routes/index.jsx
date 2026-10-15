@@ -6,7 +6,7 @@ import ComingSoonPage from "../pages/platform-admin/ComingSoonPage.jsx";
 import OverviewPage from "../pages/platform-admin/OverviewPage.jsx";
 import ProtectedRoute from "./ProtectedRoute.jsx";
 import { isPlatformAdmin } from "./roleHome.js";
-
+import HousesPage from "../pages/platform-admin/HousesPage.jsx";
 export default function AppRoutes() {
   return (
     <Routes>
@@ -18,10 +18,7 @@ export default function AppRoutes() {
           element={<AppShell roleLabel="Platform Admin" nav={adminNav} />}
         >
           <Route index element={<OverviewPage />} />
-          <Route
-            path="houses"
-            element={<ComingSoonPage title="Production houses" />}
-          />
+          <Route path="houses" element={<HousesPage />} />
           <Route path="users" element={<ComingSoonPage title="Users" />} />
           <Route
             path="audit-log"

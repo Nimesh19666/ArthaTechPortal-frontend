@@ -18,7 +18,10 @@ export class ApiError extends Error {
 }
 
 async function send(path, { method = "GET", body, auth = true } = {}) {
-  const headers = { "Content-Type": "application/json" };
+  const headers = {};
+  const isFile = body instanceof FormData;
+  // For file uploads the browser sets the Content-Type itself.
+  if (body && !isFile) headers["Content-Type"] = "application/json";
   const token = getAccessToken();
   if (auth && token) headers.Authorization = `Bearer ${token}`;
 
@@ -27,7 +30,7 @@ async function send(path, { method = "GET", body, auth = true } = {}) {
     response = await fetch(`${BASE_URL}${path}`, {
       method,
       headers,
-      body: body ? JSON.stringify(body) : undefined,
+      body: body ? (isFile ? body : JSON.stringify(body)) : undefined,
     });
   } catch {
     throw new ApiError(0, {
@@ -40,7 +43,6 @@ async function send(path, { method = "GET", body, auth = true } = {}) {
   if (!response.ok) throw new ApiError(response.status, data);
   return data;
 }
-
 // Gets a new access token. The backend also sends a NEW refresh token, so we save both.
 // If several calls fail at once, they share one refresh.
 let refreshing = null;
@@ -62,6 +64,15 @@ function refreshAccessToken() {
 }
 
 export async function api(path, options) {
+  // After a page refresh we have no access token yet. Get one first, instead of failing once.
+  if (options?.auth !== false && !getAccessToken() && getRefreshToken()) {
+    try {
+      await refreshAccessToken();
+    } catch {
+      clearTokens();
+    }
+  }
+
   try {
     return await send(path, options);
   } catch (error) {

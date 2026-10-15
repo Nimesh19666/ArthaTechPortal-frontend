@@ -1,15 +1,16 @@
+// Project types must match what the backend accepts.
 export const PROJECT_TYPES = {
   movie: "Movie",
-  ott: "OTT series",
+  ott_series: "OTT series",
   ad: "Ad film",
   other: "Other",
 };
 
-// Assumption: plan prices are placeholders, only to show earnings per house.
-export const PLANS = {
-  starter: "Starter",
-  studio: "Studio",
-  enterprise: "Enterprise",
+export const FEATURE_LABELS = {
+  whatsappAlerts: "WhatsApp alerts",
+  billOcr: "Bill OCR",
+  tallyExport: "Tally export",
+  multiProjectDashboard: "Multi-project dashboard",
 };
 
 export const ROLE_LABELS = {

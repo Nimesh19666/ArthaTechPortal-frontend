@@ -22,3 +22,7 @@ export function formatShort(paise) {
 function trim(number) {
   return String(Number(number.toFixed(2)));
 }
+// "24999" -> 2499900. Whole rupees only, so there are no decimals and no float mistakes.
+export function rupeesToPaise(text) {
+  return Number.parseInt(text, 10) * 100;
+}

@@ -1,63 +1,34 @@
 import Card from "../../../components/ui/Card.jsx";
-import Chip from "../../../components/ui/Chip.jsx";
 import Table, { TwoLine } from "../../../components/ui/Table.jsx";
-import { formatDate, formatDateTime } from "../../../lib/dates.js";
 import { formatShort } from "../../../lib/money.js";
-import { PLANS } from "../labels.js";
 
-export default function HousesSummaryTable({ houses, projects, users }) {
+export default function HousesSummaryTable({ houses }) {
   const columns = [
     {
       header: "House",
-      render: (h) => (
-        <TwoLine
-          main={h.name}
-          sub={`${h.city} · Since ${formatDate(h.createdAt)}`}
-        />
-      ),
+      render: (h) => <b className="font-semibold">{h.name}</b>,
     },
     {
       header: "Plan",
-      render: (h) => (
-        <TwoLine
-          main={PLANS[h.plan]}
-          sub={`${formatShort(h.monthlyFeePaise)} a month`}
-        />
-      ),
-    },
-    {
-      header: "Status",
       render: (h) =>
-        h.status === "active" ? (
-          <Chip tone="green">Active</Chip>
+        h.planName ? (
+          <TwoLine main={h.planName} sub={formatShort(h.planPricePaise)} />
         ) : (
-          <Chip tone="red">Suspended</Chip>
+          "—"
         ),
     },
-    {
-      header: "Projects",
-      align: "right",
-      render: (h) => projects.filter((p) => p.houseId === h.id).length,
-    },
-    {
-      header: "Users",
-      align: "right",
-      render: (h) => users.filter((u) => u.houseId === h.id).length,
-    },
-    {
-      header: "Last activity",
-      render: (h) => (
-        <TwoLine
-          main={formatDateTime(h.lastActivity.at)}
-          sub={h.lastActivity.action}
-        />
-      ),
-    },
+    { header: "Projects", align: "right", render: (h) => h.projects.length },
+    { header: "Users", align: "right", render: (h) => h.userCount },
   ];
 
   return (
     <Card title="Production houses">
-      <Table columns={columns} rows={houses} getKey={(h) => h.id} />
+      <Table
+        columns={columns}
+        rows={houses}
+        getKey={(h) => h.id}
+        empty="No production houses yet."
+      />
     </Card>
   );
 }

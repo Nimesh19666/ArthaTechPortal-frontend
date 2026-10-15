@@ -1,0 +1,20 @@
+# Packages and build output
+node_modules
+dist
+dist-ssr
+
+# Secrets (keep .env.example)
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+
+# Mac and editors
+.DS_Store
+.idea
+.vscode/*
+!.vscode/extensions.json
+*.local
