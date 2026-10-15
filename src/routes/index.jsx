@@ -7,6 +7,8 @@ import OverviewPage from "../pages/platform-admin/OverviewPage.jsx";
 import ProtectedRoute from "./ProtectedRoute.jsx";
 import { isPlatformAdmin } from "./roleHome.js";
 import HousesPage from "../pages/platform-admin/HousesPage.jsx";
+import UsersPage from "../pages/platform-admin/UsersPage.jsx";
+import AuditLogPage from "../pages/platform-admin/AuditLogPage.jsx";
 export default function AppRoutes() {
   return (
     <Routes>
@@ -19,11 +21,8 @@ export default function AppRoutes() {
         >
           <Route index element={<OverviewPage />} />
           <Route path="houses" element={<HousesPage />} />
-          <Route path="users" element={<ComingSoonPage title="Users" />} />
-          <Route
-            path="audit-log"
-            element={<ComingSoonPage title="Audit log" />}
-          />
+          <Route path="users" element={<UsersPage />} />{" "}
+          <Route path="audit-log" element={<AuditLogPage />} />
         </Route>
       </Route>
 

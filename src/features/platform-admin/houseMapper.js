@@ -1,33 +1,49 @@
-// Turns one house from the backend into the shape our screens use.
-// If a field name differs from the real backend answer, fix it HERE only.
-// Project money (budget, actual...) is not copied on purpose. It stays closed until support access exists.
-
-function toProject(raw) {
+// The list from GET /organisations/ is flat. Money fields stay in paise.
+function toMember(m) {
   return {
-    id: raw.id,
-    name: raw.name,
-    type: raw.project_type,
-    teamCount: raw.team_count ?? 0,
-    recordCount: raw.record_count ?? 0,
+    id: m.id,
+    name: m.name,
+    phone: m.phone,
+    isTeamHead: m.is_team_head,
+    isActive: m.is_active,
   };
 }
 
-export function toHouse(raw) {
-  const plan = raw.plan && typeof raw.plan === "object" ? raw.plan : {};
-  const features = raw.features ?? raw;
-
+function toTeam(t) {
   return {
-    id: raw.id,
-    name: raw.name,
-    planName: plan.name ?? raw.plan_name ?? "",
-    planPricePaise: plan.price_paise ?? raw.plan_price_paise ?? 0,
+    id: t.id,
+    name: t.name,
+    members: (t.members ?? []).map(toMember),
+  };
+}
+
+export function toProject(p) {
+  return {
+    id: p.id,
+    name: p.name,
+    type: p.project_type,
+    teamCount: p.team_count,
+    recordCount: p.record_count,
+    teams: (p.teams ?? []).map(toTeam),
+    // budget, actual, committed and remaining are not mapped on purpose (support access rule)
+  };
+}
+
+export function toHouse(h) {
+  return {
+    id: h.id,
+    name: h.name,
+    planName: h.plan, // plan name, for example "Studio"
+    planPricePaise: h.plan_price_paise,
+    isSuspended: h.is_suspended,
+    suspendedReason: h.suspended_reason,
+    userCount: h.user_count,
     features: {
-      whatsappAlerts: Boolean(features.whatsapp_alerts),
-      billOcr: Boolean(features.bill_ocr),
-      tallyExport: Boolean(features.tally_export),
-      multiProjectDashboard: Boolean(features.multi_project_dashboard),
+      whatsappAlerts: h.whatsapp_alerts,
+      billOcr: h.bill_ocr,
+      tallyExport: h.tally_export,
+      multiProjectDashboard: h.multi_project_dashboard,
     },
-    userCount: raw.user_count ?? 0,
-    projects: (raw.projects ?? []).map(toProject),
+    projects: (h.projects ?? []).map(toProject),
   };
 }
