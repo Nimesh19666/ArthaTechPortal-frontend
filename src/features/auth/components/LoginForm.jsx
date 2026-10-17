@@ -5,7 +5,7 @@ import Modal from "../../../components/ui/Modal.jsx";
 import { Field, Input } from "../../../components/ui/Field.jsx";
 import { roleHome } from "../../../routes/roleHome.js";
 import { useAuth } from "../useAuth.js";
-
+import PasswordInput from "../../../components/ui/PasswordInput.jsx";
 export default function LoginForm() {
   const { signIn, signOut } = useAuth();
   const navigate = useNavigate();
@@ -59,8 +59,7 @@ export default function LoginForm() {
           />
         </Field>
         <Field label="Password">
-          <Input
-            type="password"
+          <PasswordInput
             autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
