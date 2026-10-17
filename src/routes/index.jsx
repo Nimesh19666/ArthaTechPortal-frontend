@@ -1,15 +1,25 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import AppShell from "../components/layout/AppShell.jsx";
-import { adminNav } from "../features/platform-admin/nav.js";
+import { useAuth } from "../features/auth/useAuth.js";
+import { navForRole } from "../features/platform-admin/nav.js";
 import LoginPage from "../pages/login/LoginPage.jsx";
-import ComingSoonPage from "../pages/platform-admin/ComingSoonPage.jsx";
+import HousesPage from "../pages/platform-admin/HousesPage.jsx";
 import OverviewPage from "../pages/platform-admin/OverviewPage.jsx";
+import UsersPage from "../pages/platform-admin/UsersPage.jsx";
+import AuditLogRoute from "./AuditLogRoute.jsx";
 import ProtectedRoute from "./ProtectedRoute.jsx";
 import { isPlatformAdmin } from "./roleHome.js";
-import HousesPage from "../pages/platform-admin/HousesPage.jsx";
-import UsersPage from "../pages/platform-admin/UsersPage.jsx";
-import AuditLogPage from "../pages/platform-admin/AuditLogPage.jsx";
+import { availableRoles } from "../features/auth/roles.js";
+import RoleChoicePage from "./RoleChoicePage.jsx";
+const ROLE_LABELS = { super_admin: "Super Admin", admin: "Admin" };
+
 export default function AppRoutes() {
+  const { user, role } = useAuth();
+
+  if (user && !role && availableRoles(user).length > 1) {
+    return <RoleChoicePage />;
+  }
+
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
@@ -17,12 +27,17 @@ export default function AppRoutes() {
       <Route element={<ProtectedRoute allow={isPlatformAdmin} />}>
         <Route
           path="/admin"
-          element={<AppShell roleLabel="Platform Admin" nav={adminNav} />}
+          element={
+            <AppShell
+              roleLabel={ROLE_LABELS[role] ?? "Platform Admin"}
+              nav={navForRole(role)}
+            />
+          }
         >
           <Route index element={<OverviewPage />} />
           <Route path="houses" element={<HousesPage />} />
-          <Route path="users" element={<UsersPage />} />{" "}
-          <Route path="audit-log" element={<AuditLogPage />} />
+          <Route path="users" element={<UsersPage />} />
+          <Route path="audit-log" element={<AuditLogRoute />} />
         </Route>
       </Route>
 

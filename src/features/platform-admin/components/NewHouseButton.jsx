@@ -4,17 +4,8 @@ import Modal from "../../../components/ui/Modal.jsx";
 import { Field, Input, Select } from "../../../components/ui/Field.jsx";
 import { useToast } from "../../../components/ui/useToast.js";
 import { errorText } from "../../../lib/errors.js";
-import { rupeesToPaise } from "../../../lib/money.js";
 import { createHouse } from "../api.js";
-import { FEATURE_LABELS, PROJECT_TYPES, toOptions } from "../labels.js";
-
-// Form field name for each feature, as the backend expects it.
-const FEATURE_FIELDS = {
-  whatsappAlerts: "whatsapp_alerts",
-  billOcr: "bill_ocr",
-  tallyExport: "tally_export",
-  multiProjectDashboard: "multi_project_dashboard",
-};
+import { PROJECT_TYPES, toOptions } from "../labels.js";
 
 export default function NewHouseButton({ onDone }) {
   const toast = useToast();
@@ -25,15 +16,7 @@ export default function NewHouseButton({ onDone }) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
 
-    const payload = {
-      name: String(form.get("name")).trim(),
-      plan_name: String(form.get("plan_name")).trim(),
-    };
-    const price = String(form.get("price")).trim();
-    if (price) payload.plan_price_paise = rupeesToPaise(price);
-    for (const field of Object.values(FEATURE_FIELDS)) {
-      payload[field] = form.get(field) === "on";
-    }
+    const payload = { name: String(form.get("name")).trim() };
     const projectName = String(form.get("project_name")).trim();
     if (projectName) {
       payload.projects = [
@@ -69,39 +52,6 @@ export default function NewHouseButton({ onDone }) {
             <Field label="House name">
               <Input name="name" required placeholder="Example: Lotus Films" />
             </Field>
-            <div className="grid gap-x-3.5 sm:grid-cols-2">
-              <Field label="Plan name" hint="Reused if it already exists.">
-                <Input name="plan_name" required placeholder="Studio" />
-              </Field>
-              <Field
-                label="Plan price in rupees"
-                hint="Whole rupees, for example 24999."
-              >
-                <Input
-                  name="price"
-                  inputMode="numeric"
-                  pattern="[0-9]+"
-                  placeholder="24999"
-                />
-              </Field>
-            </div>
-
-            <p className="mb-1.5 text-[13.5px] font-semibold">Features</p>
-            <div className="mb-3 grid gap-1.5 sm:grid-cols-2">
-              {Object.entries(FEATURE_LABELS).map(([key, label]) => (
-                <label
-                  key={key}
-                  className="flex items-center gap-2 text-[14px]"
-                >
-                  <input
-                    type="checkbox"
-                    name={FEATURE_FIELDS[key]}
-                    className="size-4.5 accent-brand"
-                  />
-                  {label}
-                </label>
-              ))}
-            </div>
 
             <div className="grid gap-x-3.5 sm:grid-cols-2">
               <Field label="First project (optional)">

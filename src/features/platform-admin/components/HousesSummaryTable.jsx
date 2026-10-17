@@ -1,6 +1,6 @@
 import Card from "../../../components/ui/Card.jsx";
-import Table, { TwoLine } from "../../../components/ui/Table.jsx";
-import { formatShort } from "../../../lib/money.js";
+import Chip from "../../../components/ui/Chip.jsx";
+import Table from "../../../components/ui/Table.jsx";
 
 export default function HousesSummaryTable({ houses }) {
   const columns = [
@@ -9,12 +9,12 @@ export default function HousesSummaryTable({ houses }) {
       render: (h) => <b className="font-semibold">{h.name}</b>,
     },
     {
-      header: "Plan",
+      header: "Status",
       render: (h) =>
-        h.planName ? (
-          <TwoLine main={h.planName} sub={formatShort(h.planPricePaise)} />
+        h.isSuspended ? (
+          <Chip tone="red">Suspended</Chip>
         ) : (
-          "—"
+          <Chip tone="green">Active</Chip>
         ),
     },
     { header: "Projects", align: "right", render: (h) => h.projects.length },

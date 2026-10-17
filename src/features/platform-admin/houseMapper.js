@@ -33,17 +33,9 @@ export function toHouse(h) {
   return {
     id: h.id,
     name: h.name,
-    planName: h.plan, // plan name, for example "Studio"
-    planPricePaise: h.plan_price_paise,
     isSuspended: h.is_suspended,
     suspendedReason: h.suspended_reason,
     userCount: h.user_count,
-    features: {
-      whatsappAlerts: h.whatsapp_alerts,
-      billOcr: h.bill_ocr,
-      tallyExport: h.tally_export,
-      multiProjectDashboard: h.multi_project_dashboard,
-    },
     projects: (h.projects ?? []).map(toProject),
   };
 }

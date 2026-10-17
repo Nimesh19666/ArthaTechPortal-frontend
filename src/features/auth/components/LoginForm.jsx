@@ -25,11 +25,12 @@ export default function LoginForm() {
       if (!home) {
         await signOut();
         setError(
-          "Only the Platform Admin can sign in for now. Other roles come in later phases.",
+          "This account has no screens yet. Only Super Admin and Admin can sign in for now.",
         );
         setBusy(false);
         return;
       }
+      // The routes show the role screen first when the account has two or more roles.
       navigate(home, { replace: true });
     } catch (err) {
       setError(err.message);

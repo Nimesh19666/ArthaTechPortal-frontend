@@ -10,10 +10,22 @@ const BASE_URL = import.meta.env.VITE_API_URL;
 // Every backend error becomes one of these: { status, code, message, details }
 export class ApiError extends Error {
   constructor(status, body) {
-    super(body?.message || "Something went wrong. Please try again.");
+    super(
+      body?.message ||
+        body?.detail ||
+        "Something went wrong. Please try again.",
+    );
     this.status = status;
     this.code = body?.code ?? "SERVER_ERROR";
-    this.details = body?.details ?? null;
+    // Field errors come as { email: ["..."] } with no code, message or detail.
+    const isFieldErrors =
+      body &&
+      typeof body === "object" &&
+      !Array.isArray(body) &&
+      !body.code &&
+      !body.message &&
+      !body.detail;
+    this.details = body?.details ?? (isFieldErrors ? body : null);
   }
 }
 
@@ -43,7 +55,8 @@ async function send(path, { method = "GET", body, auth = true } = {}) {
   if (!response.ok) throw new ApiError(response.status, data);
   return data;
 }
-// Gets a new access token. The backend also sends a NEW refresh token, so we save both.
+
+// Gets a new access token. If the backend also sends a NEW refresh token, we save both.
 // If several calls fail at once, they share one refresh.
 let refreshing = null;
 function refreshAccessToken() {

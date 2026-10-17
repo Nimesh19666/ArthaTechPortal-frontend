@@ -1,4 +1,5 @@
 import { NavLink, Outlet } from "react-router-dom";
+import SwitchRole from "../../features/auth/components/SwitchRole.jsx";
 import { useAuth } from "../../features/auth/useAuth.js";
 import Button from "../ui/Button.jsx";
 
@@ -74,9 +75,7 @@ export default function AppShell({ roleLabel, nav }) {
             </div>
           </div>
           <div className="flex items-center gap-2.5">
-            <span className="rounded-full bg-panel px-2.5 py-0.75 text-xs text-ink-2">
-              Demo data
-            </span>
+            <SwitchRole />
             <Button size="small" className="md:hidden" onClick={signOut}>
               Sign out
             </Button>

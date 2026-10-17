@@ -1,15 +1,13 @@
 import Card from "../../../components/ui/Card.jsx";
 import Chip from "../../../components/ui/Chip.jsx";
 import Table, { TwoLine } from "../../../components/ui/Table.jsx";
-import { formatShort } from "../../../lib/money.js";
 import { PROJECT_TYPES } from "../labels.js";
 import AddItemsButton from "./AddItemsButton.jsx";
-import ChangePlanButton from "./ChangePlanButton.jsx";
-import FeatureSwitches from "./FeatureSwitches.jsx";
+import RemoveAllButton from "./RemoveAllButton.jsx";
 import RemoveButton from "./RemoveButton.jsx";
 import SuspendButton from "./SuspendButton.jsx";
 import TeamsList from "./TeamsList.jsx";
-import RemoveAllButton from "./RemoveAllButton.jsx";
+
 export default function HouseCard({ house, onChanged }) {
   const projectColumns = [
     {
@@ -35,22 +33,19 @@ export default function HouseCard({ house, onChanged }) {
     },
   ];
 
-  const plan = house.planName
-    ? `${house.planName} plan · ${formatShort(house.planPricePaise)}`
-    : "No plan";
+  const subtitle = `${house.userCount} users${
+    house.isSuspended && house.suspendedReason
+      ? ` · Suspended: ${house.suspendedReason}`
+      : ""
+  }`;
 
   return (
     <Card
       title={house.name}
-      subtitle={`${plan} · ${house.userCount} users${
-        house.isSuspended && house.suspendedReason
-          ? ` · Suspended: ${house.suspendedReason}`
-          : ""
-      }`}
+      subtitle={subtitle}
       actions={
         <>
           {house.isSuspended && <Chip tone="red">Suspended</Chip>}
-          <ChangePlanButton house={house} onDone={onChanged} />
           <AddItemsButton house={house} onDone={onChanged} />
           <SuspendButton house={house} onDone={onChanged} />
           {house.projects.length > 0 && (
@@ -72,7 +67,6 @@ export default function HouseCard({ house, onChanged }) {
         </>
       }
     >
-      <FeatureSwitches house={house} onDone={onChanged} />
       <Table
         columns={projectColumns}
         rows={house.projects}
